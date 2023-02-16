@@ -104,11 +104,9 @@ function showRecipeInfo(recipeInfo = []) {
     const { idMeal, strInstructions, strMeal, strMealThumb } = recipeInfo;
     const ingredients = iterator('strIngredient',recipeInfo);
     const measures = iterator('strMeasure', recipeInfo);
-
     const modalTitle = document.querySelector('.modal .modal-title');
     const modalBody = document.querySelector('.modal .modal-body');
     
-
     modalTitle.textContent = strMeal;
     modalBody.innerHTML = 
     `
@@ -126,7 +124,6 @@ function showRecipeInfo(recipeInfo = []) {
         ingredient.textContent = `${ingredients[i]} - ${measures[i]}`;
         listGroup.appendChild(ingredient);
     }
-    console.log(listGroup);
     modalBody.appendChild(listGroup);
     modal.show();
 
@@ -140,14 +137,11 @@ function cleanHtml(nodo) {
 
 function iterator(texto, recipeInfo) {
     const result = [];
-    let ctr = 0;
-    let content;
-    do {
-        ctr++;
-        content = recipeInfo[`${texto}${ctr}`];
-        if(content != '')
+    for(let i=1; i<=20; i++) {
+        const content = recipeInfo[`${texto}${i}`];
+        if(content !== '' && content !== null){
             result.push(content);
-    } while (content != '');
-
+        }
+    }
     return result;
 }
