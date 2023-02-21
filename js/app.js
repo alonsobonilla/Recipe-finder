@@ -1,3 +1,4 @@
+import { addFavorite, existRecipe, deleteFavorite } from "./localStorage.js";
 //Main event
 document.addEventListener('DOMContentLoaded', initApp);
 
@@ -106,7 +107,8 @@ function showRecipeInfo(recipeInfo = []) {
     const measures = iterator('strMeasure', recipeInfo);
     const modalTitle = document.querySelector('.modal .modal-title');
     const modalBody = document.querySelector('.modal .modal-body');
-    
+    const modalFooter = document.querySelector('.modal-footer');
+
     modalTitle.textContent = strMeal;
     modalBody.innerHTML = 
     `
@@ -125,6 +127,35 @@ function showRecipeInfo(recipeInfo = []) {
         listGroup.appendChild(ingredient);
     }
     modalBody.appendChild(listGroup);
+
+    cleanHtml(modalFooter);
+    const btnFavorito = document.createElement('BUTTON');
+    btnFavorito.classList.add('btn','btn-danger','col');
+    btnFavorito.textContent = existRecipe(idMeal) ? 'Delete Favorite' : 'Add Favorite';
+    btnFavorito.onclick = function() {
+        if(!existRecipe(idMeal)) {
+            addFavorite({
+                idMeal,
+                img: strMealThumb,
+                title: strMeal
+            });
+            btnFavorito.textContent = 'Delete Favorite';
+            showToast('Added Recipe');
+            return;
+        } 
+        deleteFavorite(idMeal);
+        btnFavorito.textContent = 'Add Favorite';
+        showToast('Deleted Recipe');
+    }
+
+    const btnCerrar = document.createElement('BUTTON');
+    btnCerrar.classList.add('btn','btn-secondary','col');
+    btnCerrar.textContent = 'Close';
+    btnCerrar.onclick = function() {
+        modal.hide();
+    }
+    modalFooter.appendChild(btnFavorito);
+    modalFooter.appendChild(btnCerrar);
     modal.show();
 
 }
@@ -144,4 +175,12 @@ function iterator(texto, recipeInfo) {
         }
     }
     return result;
+}
+
+function showToast(message) {
+    const toastDiv = document.querySelector('#toast');
+    const toastBody = document.querySelector('.toast-body');
+    const toast = new bootstrap.Toast(toastDiv);
+    toastBody.textContent = message;
+    toast.show();
 }
